@@ -1,5 +1,8 @@
 //
 // Created by francisco on 27-09-15.
+// @Author: Francisco Gonzalez
+// Fixed by Roberto Konow
+
 //
 
 #ifndef ABBTHREAD_NODE_H

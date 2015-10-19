@@ -1,3 +1,6 @@
+// @Author: Francisco Gonzalez
+// Fixed by Roberto Konow
+
 #include <iostream>
 #include <thread>
 #include <queue>
@@ -29,18 +32,20 @@ int main() {
 
     queue<Node*> q;
     q = a->Print_by_level(a->m_root);
+    print_inorder(a->m_root,0,1000);
+    cout << "....." << endl;
     vector<thread> th;
     for(int i = 0; i < 1;i++){
+        cout << q.front()->data << endl;
         q.pop();
     }
     for(int i = 0; i < 2;i++){
-        th.push_back(thread(&ABB::print_inorder,*a,q.front(),12,80));
+        th.push_back(thread(print_inorder,q.front(),12,80));
         q.pop();
     }
     for(int i = 0; i < 2; i++) {
         th[i].join();
     }
-    for(int i = 0; i < 100000000; i++){}
 
     delete a;
     return 0;

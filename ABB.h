@@ -1,5 +1,8 @@
 //
 // Created by francisco on 27-09-15.
+// @Author: Francisco Gonzalez
+// Fixed by Roberto Konow
+
 //
 
 #ifndef ABBTHREAD_ABB_H
@@ -15,6 +18,20 @@
 
 using namespace std;
 atomic<int> cont;
+
+void print_inorder(Node* root,int lower_bound,int upper_bound){
+    if(root != nullptr){
+        print_inorder(root->m_left,lower_bound,upper_bound);
+        if(root->data >= lower_bound && root->data <= upper_bound){
+            cout << root->data << endl;
+        } else {
+            return;
+        }
+        print_inorder(root->m_right,lower_bound,upper_bound);
+    }
+//    cout << cont << endl;
+
+}
 
 class ABB{
 
@@ -97,35 +114,6 @@ public:
         return;
     }
 
-    void Search_3(Node* root,int lower_bound,int upper_bound){
-        queue<Node*> q = Print_by_level(root); // queue con los primeros tres niveles
-        vector<thread> th;
-        for(int i = 0; i < 3;i++){  //se elimina los dos primeros niveles
-            q.pop();
-        }
-        for(int i = 0; i < 4;i++){
-            th.push_back(thread(print_inorder,q.front(),lower_bound,upper_bound)); //vector de thread
-            q.pop();
-        }
-        for(int i = 0; i < 4; i++){ // se ejecutan los thread
-            th[i].join();
-        }
-    }
-
-
-    void print_inorder(Node* root,int lower_bound,int upper_bound){
-        if(root != nullptr){
-            print_inorder(root->m_left,lower_bound,upper_bound);
-            if(root->data >= lower_bound && root->data <= upper_bound){
-                //cout << root->data << endl;
-                //cont++;
-                return;
-            }
-            print_inorder(root->m_right,lower_bound,upper_bound);
-        }
-        cout << cont << endl;
-
-    }
 };
 
 #endif //ABBTHREAD_ABB_H
