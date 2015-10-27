@@ -1,5 +1,8 @@
 //
 // Created by francisco on 27-09-15.
+// @Author: Francisco Gonzalez
+// Fixed by Roberto Konow
+
 //
 
 #ifndef ABBTHREAD_ABB_H
@@ -8,13 +11,35 @@
 #include <iostream>
 #include <thread>
 #include <vector>
-#include <atomic>
-#include "Node.h"
 #include <queue>
-
+#include "Node.h"
+#include "Time.h"
 
 using namespace std;
-atomic<int> cont;
+
+queue<Node*> divide(ABB* tree, int num_thread){
+    queue<Node*> q;
+    q = tree->Print_by_level(tree->m_root,num_thread + 1);
+    for(int j = 0; j < num_thread - 1;j++){
+        q.pop();
+    }
+    return q;
+}
+
+void print_inorder(Node* root,int lower_bound,int upper_bound){
+
+    if(root != nullptr){
+        print_inorder(root->m_left,lower_bound,upper_bound);
+        if(root->data >= lower_bound && root->data <= upper_bound){
+            //cout << root->data << endl;
+        } else {
+            return;
+        }
+        print_inorder(root->m_right,lower_bound,upper_bound);
+    }
+//    cout << cont << endl;
+
+}
 
 class ABB{
 
@@ -48,12 +73,12 @@ public:
         }
     }
 
-    queue<Node*> Print_by_level(Node* root){
+    queue<Node*> Print_by_level(Node* root,int element){
         queue<Node*> q;
         queue<Node*> m_q;
         q.push(root);
         int cont = 0;
-        while(!q.empty() && cont != 7){
+        while(!q.empty() && cont != element){
             if(q.front()->m_left != nullptr){
 
                 q.push(q.front()->m_left);
@@ -97,35 +122,6 @@ public:
         return;
     }
 
-    void Search_3(Node* root,int lower_bound,int upper_bound){
-        queue<Node*> q = Print_by_level(root); // queue con los primeros tres niveles
-        vector<thread> th;
-        for(int i = 0; i < 3;i++){  //se elimina los dos primeros niveles
-            q.pop();
-        }
-        for(int i = 0; i < 4;i++){
-            th.push_back(thread(print_inorder,q.front(),lower_bound,upper_bound)); //vector de thread
-            q.pop();
-        }
-        for(int i = 0; i < 4; i++){ // se ejecutan los thread
-            th[i].join();
-        }
-    }
-
-
-    void print_inorder(Node* root,int lower_bound,int upper_bound){
-        if(root != nullptr){
-            print_inorder(root->m_left,lower_bound,upper_bound);
-            if(root->data >= lower_bound && root->data <= upper_bound){
-                //cout << root->data << endl;
-                //cont++;
-                return;
-            }
-            print_inorder(root->m_right,lower_bound,upper_bound);
-        }
-        cout << cont << endl;
-
-    }
 };
 
 #endif //ABBTHREAD_ABB_H
