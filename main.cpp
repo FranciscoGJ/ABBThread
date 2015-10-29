@@ -7,6 +7,7 @@
 #include <queue>
 #include <random>
 #include <atomic>
+#include "Time.h"
 #include "ABB.h"
 
 
@@ -24,10 +25,10 @@ int main() {
      }
     for(int i = 1; i <= 5;i++){ // 5 mediciones correspondiente a 10% .... 50%
         for(int num_thread = 2; num_thread <= 16; num_thread = num_thread*2){ // cantidad de thread
-            queue<Node*> q;
-            q = divide(a,num_thread);
             for(int num_med = 0; num_med < 30; num_med++){ //numero de mediciones
                 vector<thread> th;
+                queue<Node*> q;
+                q = divide(a,num_thread);
                 for(int j = 0; j < num_thread;j++){
                     th.push_back(thread(print_inorder,q.front(),1200,8508000));
                     q.pop();
@@ -35,6 +36,7 @@ int main() {
                 for(int j = 0; j < num_thread;j++){
                     th[j].join();
                 }
+                //cout << elapsed_time << endl;
             }
         }
     }
