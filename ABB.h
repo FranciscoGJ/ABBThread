@@ -50,14 +50,12 @@ public:
         }
     }
 
-    queue<Node*> Print_by_level(Node* root,int element){
+    void Print_by_level(Node* root,int element, queue<Node*> &m_q){
         queue<Node*> q;
-        queue<Node*> m_q;
         q.push(root);
         int cont = 0;
         while(!q.empty() && cont != element){
             if(q.front()->m_left != nullptr){
-
                 q.push(q.front()->m_left);
             }
             if(q.front()->m_right != nullptr){
@@ -67,7 +65,6 @@ public:
             cont++;
             q.pop();
         }
-        return m_q;
     }
 
     void Search_2(Node* root,int lower_bound,int upper_bound){
@@ -101,17 +98,18 @@ public:
 
 };
 
-queue<Node*> divide(ABB* tree, int num_thread){
-    queue<Node*> q;
-    q = tree->Print_by_level(tree->m_root,num_thread + 1);
+void divide(ABB* tree, int num_thread,queue<Node*>& q){
+    queue<Node*> q_empty;
+    q.swap(q_empty);
+    tree->Print_by_level(tree->m_root,num_thread + 1, q);
     for(int j = 0; j < num_thread - 1;j++){
         q.pop();
     }
-    return q;
 }
 
 void print_inorder(Node* root,int lower_bound,int upper_bound){
     if(root != nullptr){
+        cout << "root es" << root->data << "...." <<  endl;
         print_inorder(root->m_left,lower_bound,upper_bound);
         if(root->data >= lower_bound && root->data <= upper_bound){
             //cout << root->data << endl;

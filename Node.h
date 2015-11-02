@@ -14,6 +14,7 @@ public:
     Node* m_right;
     Node* m_left;
     Node(int data) : data(data),m_left(nullptr),m_right(nullptr){}
+//    ~Node() {}
 };
 
 #endif //ABBTHREAD_NODE_H
