@@ -16,10 +16,17 @@
 ABB* create_tree(ABB* a,int size_tree){
     random_device rd;
     mt19937 gen(rd());
-    uniform_int_distribution<> dis(0, 100000);
+    int x = 0;
+    int y = 10000000;
+    uniform_int_distribution<> dis(0, 50000000);
     for (int n = 0; n < size_tree; n++) { //Tamaño del arbol
-        a->Insert(dis(gen));
+	int insert = dis(gen);
+	x = max(insert,x);
+        y = min(insert,y);
+        a->Insert(insert);
     }
+    cout << "max = " << x << endl;
+    cout << "min = " << y << endl;
     return a;
 }
 
@@ -33,36 +40,41 @@ tuple<int, int> search_range(int range,int size){
 }
 
 int main(int argc, char** argv) {
-    int n = 1000000;
-    int mediciones = 1;
+    int n = 5000000;
+    int mediciones = 10;
     int threads = atoi(argv[1]);
     queue<Node*> q;
     for(int i = 1; i <= 5;i++){ // 5 mediciones correspondiente a 10% .... 50%
+    	int cont = 0;
+        ABB *a = create_tree(new ABB(),n);
         for(int num_thread = 1; num_thread <= threads; num_thread = num_thread*2){ // cantidad de thread
 //            cout << num_thread << endl;
-            ABB *a = create_tree(new ABB(),n);
-            Timer t;
+            
+	    Timer t;
+	    t.Restart();
+	    cont++;
             for(int num_med = 0; num_med < mediciones; num_med++){ //numero de mediciones
                 vector<thread> th;
-                divide(a,num_thread,q);
+        	vector<int> v;
+		auto range = search_range(i*10,n);
+            	divide(a,cont,q);
 //                cout << "dividido ok" << endl;
 //                cout << q.size() << endl;
-                auto range = search_range(i*10,n);
                 for(int j = 0; j < num_thread;j++){
                     Node* t = q.front();
-                    th.push_back(thread(print_inorder,t,get<0>(range),get<1>(range)));
+                    th.push_back(thread(print_inorder,t,get<0>(range),get<1>(range),ref(v)));
                     q.pop();
                 }
                 for(int j = 0; j < num_thread;j++){
                     th[j].join();
                 }
+//		cout << "suma = " << v.size() << endl;
             }
             t.Stop();
-            cout << "t \t = " << num_thread << " \t " << i*10 << "% " << t.ElapsedTimeCPU()/mediciones << endl;
-            delete a;
+            cout << "t \t = " << num_thread << " \t " << i*10 << "% " << t.ElapsedTime()/mediciones << endl;
         }
     }
-//    delete a;
+   //delete a;
 /* --------------------------------------------------------------------------------------------------------*/
 
 //    int num_thread = 8;

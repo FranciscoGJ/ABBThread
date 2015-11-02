@@ -14,7 +14,7 @@
 #include <queue>
 #include "Node.h"
 #include "Time.h"
-
+#include <mutex>
 using namespace std;
 
 
@@ -28,6 +28,7 @@ public:
 
         if(m_root == nullptr){
             m_root = new Node(data);
+	    cout << "root is " << m_root->data << endl;
         }else{
             Node* aux = m_root;
             while(aux != nullptr){
@@ -104,28 +105,36 @@ void divide(ABB* tree, int num_thread,queue<Node*>& q){
     queue<Node*> q_empty;
     q.swap(q_empty);
 //    cout << "divido aca" << endl;
-//    cout << "num_thread = " << num_thread << endl;
+    int sacar = (1<<(num_thread-1))-1;
+//    cout << "num_thread = " << (1<<num_thread-1) << endl;
     int nodos = (1<<num_thread)-1;
 //    cout << "nodos = " << nodos << endl;
+//    cout << "sacar = " << sacar << endl;
     tree->Print_by_level(tree->m_root,nodos, q);
-    for(int j = 0; j < num_thread - 1;j++){
+    for(int j = 0; j < sacar;j++){
         q.pop();
     }
 //    cout << "taman = " << q.size() << endl;
 //    cout << "termino aca" << endl;
 }
 
-void print_inorder(Node* root,int lower_bound,int upper_bound){
+std::mutex my_lock;
+
+void print_inorder(Node* root,int lower_bound,int upper_bound, vector<int>& v){
 //    cout << "entre?? wtf" << endl;
     if(root != nullptr){
-//        cout << "root es" << root->data << "...." <<  endl;
-        print_inorder(root->m_left,lower_bound,upper_bound);
+    //   cout << "root es" << root->data << "...." <<  endl;
+    //   cout << "lower = " << lower_bound << endl;
+   //	cout << "upper = " << upper_bound << endl;
+        print_inorder(root->m_left,lower_bound,upper_bound,v);
         if(root->data >= lower_bound && root->data <= upper_bound){
             //cout << root->data << endl;
-        } else {
-            return;
+//		my_lock.lock();
+//		cout << "insertando" << endl;
+//		v.push_back(root->data);
+//		my_lock.unlock();
         }
-        print_inorder(root->m_right,lower_bound,upper_bound);
+        print_inorder(root->m_right,lower_bound,upper_bound,v);
     }
 //    cout << cont << endl;
 
