@@ -64,7 +64,9 @@ public:
             m_q.push(q.front());
             cont++;
             q.pop();
+//            cout << "entre?? wtf2" << endl;
         }
+//        cout << "tamano m_pq = " << m_q.size() << endl;
     }
 
     void Search_2(Node* root,int lower_bound,int upper_bound){
@@ -101,15 +103,22 @@ public:
 void divide(ABB* tree, int num_thread,queue<Node*>& q){
     queue<Node*> q_empty;
     q.swap(q_empty);
-    tree->Print_by_level(tree->m_root,num_thread + 1, q);
+//    cout << "divido aca" << endl;
+//    cout << "num_thread = " << num_thread << endl;
+    int nodos = (1<<num_thread)-1;
+//    cout << "nodos = " << nodos << endl;
+    tree->Print_by_level(tree->m_root,nodos, q);
     for(int j = 0; j < num_thread - 1;j++){
         q.pop();
     }
+//    cout << "taman = " << q.size() << endl;
+//    cout << "termino aca" << endl;
 }
 
 void print_inorder(Node* root,int lower_bound,int upper_bound){
+//    cout << "entre?? wtf" << endl;
     if(root != nullptr){
-        cout << "root es" << root->data << "...." <<  endl;
+//        cout << "root es" << root->data << "...." <<  endl;
         print_inorder(root->m_left,lower_bound,upper_bound);
         if(root->data >= lower_bound && root->data <= upper_bound){
             //cout << root->data << endl;

@@ -33,20 +33,24 @@ tuple<int, int> search_range(int range,int size){
 }
 
 int main(int argc, char** argv) {
+    int n = 1000000;
+    int mediciones = 1;
     int threads = atoi(argv[1]);
     queue<Node*> q;
     for(int i = 1; i <= 5;i++){ // 5 mediciones correspondiente a 10% .... 50%
-        for(int num_thread = 2; num_thread <= threads; num_thread = num_thread*2){ // cantidad de thread
+        for(int num_thread = 1; num_thread <= threads; num_thread = num_thread*2){ // cantidad de thread
 //            cout << num_thread << endl;
+            ABB *a = create_tree(new ABB(),n);
             Timer t;
-            for(int num_med = 0; num_med < 2; num_med++){ //numero de mediciones
-                ABB *a = create_tree(new ABB(),100000);
+            for(int num_med = 0; num_med < mediciones; num_med++){ //numero de mediciones
                 vector<thread> th;
                 divide(a,num_thread,q);
-                cout << q.size() << endl;
-                auto range = search_range(i*10,100000);
+//                cout << "dividido ok" << endl;
+//                cout << q.size() << endl;
+                auto range = search_range(i*10,n);
                 for(int j = 0; j < num_thread;j++){
-                    th.push_back(thread(print_inorder,q.front(),get<0>(range),get<1>(range)));
+                    Node* t = q.front();
+                    th.push_back(thread(print_inorder,t,get<0>(range),get<1>(range)));
                     q.pop();
                 }
                 for(int j = 0; j < num_thread;j++){
@@ -54,7 +58,8 @@ int main(int argc, char** argv) {
                 }
             }
             t.Stop();
-            cout << "t \t = " << num_thread << " \t " << i*10 << "% " << t.ElapsedTimeCPU()/2.0 << endl;
+            cout << "t \t = " << num_thread << " \t " << i*10 << "% " << t.ElapsedTimeCPU()/mediciones << endl;
+            delete a;
         }
     }
 //    delete a;
