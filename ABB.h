@@ -99,6 +99,14 @@ public:
         return;
     }
 
+    void inorder(Node* root){
+        if(root != nullptr){
+            inorder(root->m_left);
+            cout << root->data << ", ";
+            inorder(root->m_right);
+        }
+    }
+
 };
 
 queue<Node*> divide(ABB* tree, int num_thread){
@@ -110,33 +118,4 @@ queue<Node*> divide(ABB* tree, int num_thread){
     return q;
 }
 
-void print_inorder(Node* root,int lower_bound,int upper_bound){
-    if(root != nullptr){
-        print_inorder(root->m_left,lower_bound,upper_bound);
-        if(root->data >= lower_bound && root->data <= upper_bound){
-            //cout << root->data << endl;
-        } else {
-            return;
-        }
-        print_inorder(root->m_right,lower_bound,upper_bound);
-    }
-//    cout << cont << endl;
-
-}
-
-double print_inorder_2(Node* root,int lower_bound,int upper_bound,double &elapsed_time){
-    if(root != nullptr){
-        Timer t;
-        print_inorder_2(root->m_left,lower_bound,upper_bound,elapsed_time);
-        if(root->data >= lower_bound && root->data <= upper_bound){
-            //cout << root->data << endl;
-        } else {
-            t.Stop();
-            return elapsed_time += t.ElapsedTime();
-        }
-        print_inorder_2(root->m_right,lower_bound,upper_bound,elapsed_time);
-    }
-//    cout << cont << endl;
-
-}
 #endif //ABBTHREAD_ABB_H
