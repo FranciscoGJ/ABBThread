@@ -16,7 +16,7 @@
 ABB* create_tree(ABB* a,int size_tree){
     random_device rd;
     mt19937 gen(rd());
-    uniform_int_distribution<> dis(0, 150);
+    uniform_int_distribution<> dis(0, 1000);
     for (int n = 0; n < size_tree; n++) { //Tamaño del arbol
         a->Insert(dis(gen));
     }
@@ -34,13 +34,37 @@ tuple<int, int> search_range(int range,int size){
 
 int main() {
 
-    ABB *a = create_tree(new ABB(),100);
-    auto range = search_range(5*10,100);
-    a->inorder(a->m_root);
+    ABB *a = create_tree(new ABB(),1000);
+    auto range = search_range(5*10,1000);
+    int num_thread = 1;
+    // a->inorder(a->m_root);
     cout << endl;
     cout << "Lower " << get<0>(range) << "Upper " << get<1>(range) << endl;
+    // Search_2(a->m_root,get<0>(range),get<1>(range));
 
-    a->Search_2(a->m_root,get<0>(range),get<1>(range));
+    for(int i = 0; i < 1; i++){
+
+
+        Timer t;
+        t.Restart();
+        queue<Node*> q;
+        q = divide(a,num_thread);
+
+        vector<thread> th;
+        for(int j = 0; j < num_thread;j++){
+            th.push_back(thread(Search_2,q.front(),get<0>(range),get<1>(range)));
+            q.pop();
+        }
+
+        for(int j = 0; j < num_thread;j++){
+            th[j].join();
+        }
+
+        t.Stop();
+        cout << "t \t = " << num_thread << " \t " << 5*10 << "% " << t.ElapsedTime()/1 << endl;
+    }
+
+    delete a;
 
  //    for(int i = 1; i <= 5;i++){ // 5 mediciones correspondiente a 10% .... 50%
  //        for(int num_thread = 2; num_thread <= 8; num_thread = num_thread*2){ // cantidad de thread

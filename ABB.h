@@ -70,7 +70,26 @@ public:
         return m_q;
     }
 
-    void Search_2(Node* root,int lower_bound,int upper_bound){
+    void inorder(Node* root){
+        if(root != nullptr){
+            inorder(root->m_left);
+            cout << root->data << ", ";
+            inorder(root->m_right);
+        }
+    }
+
+};
+
+queue<Node*> divide(ABB* tree, int num_thread){
+    queue<Node*> q;
+    q = tree->Print_by_level(tree->m_root,num_thread + 1);
+    for(int j = 0; j < num_thread - 1;j++){
+        q.pop();
+    }
+    return q;
+}
+
+void Search_2(Node* root,int lower_bound,int upper_bound){
         if(root != nullptr) {
             queue<Node *> q;
             q.push(root);
@@ -97,25 +116,6 @@ public:
             }
         }
         return;
-    }
-
-    void inorder(Node* root){
-        if(root != nullptr){
-            inorder(root->m_left);
-            cout << root->data << ", ";
-            inorder(root->m_right);
-        }
-    }
-
-};
-
-queue<Node*> divide(ABB* tree, int num_thread){
-    queue<Node*> q;
-    q = tree->Print_by_level(tree->m_root,num_thread + 1);
-    for(int j = 0; j < num_thread - 1;j++){
-        q.pop();
-    }
-    return q;
 }
 
 #endif //ABBTHREAD_ABB_H
