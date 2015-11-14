@@ -5,6 +5,7 @@
       <sourceFolder url="file://$MODULE_DIR$/ABB.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Node.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Time.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/main.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/random_numbers.h" isTestSource="false" />
     </content>
@@ -14,18 +15,14 @@
       <library name="Header Search Paths">
         <CLASSES>
           <root url="file:///usr/include" />
-          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/4.9/include" />
-          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed" />
-          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/4.9/include/cilk" />
-          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/4.9/include/sanitizer" />
+          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/4.8/include" />
+          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed" />
           <root url="file:///usr/local/include" />
         </CLASSES>
         <SOURCES>
           <root url="file:///usr/include" />
-          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/4.9/include" />
-          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed" />
-          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/4.9/include/cilk" />
-          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/4.9/include/sanitizer" />
+          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/4.8/include" />
+          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed" />
           <root url="file:///usr/local/include" />
         </SOURCES>
       </library>
