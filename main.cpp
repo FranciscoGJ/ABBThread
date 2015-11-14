@@ -17,7 +17,7 @@ ABB* create_tree(ABB* a,int size_tree){
     random_device rd;
     mt19937 gen(rd());
     uniform_int_distribution<> dis(0, 10000000);
-    for (int n = 0; n < size_tree; n++) { //Tamaño del arbol
+    for (int n = 0; n < size_tree; n++) {
         a->Insert(dis(gen));
     }
     return a;
