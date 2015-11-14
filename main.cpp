@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <thread>
 #include <vector>
 #include <queue>
@@ -11,15 +12,22 @@
 #include "Time.h"
 #include "ABB.h"
 
-    using namespace std;
+using namespace std;
 
 ABB* create_tree(ABB* a,int size_tree){
     random_device rd;
     mt19937 gen(rd());
+    int x = 0;
+    int y = 10000000;
     uniform_int_distribution<> dis(0, 10000000);
-    for (int n = 0; n < size_tree; n++) {
-        a->Insert(dis(gen));
+    for (int n = 0; n < size_tree; n++) { //Tamaño del arbol
+        int insert = dis(gen);
+        x = max(insert,x);
+        y = min(insert,y);
+        a->Insert(insert);
     }
+    cout << "max = " << x << endl;
+    cout << "min = " << y << endl;
     return a;
 }
 
@@ -32,52 +40,47 @@ tuple<int, int> search_range(int range,int size){
 
 }
 
-int main() {
-
-    ABB *a = create_tree(new ABB(),10000000);
+int main(int argc, char** argv) {
+    int n = 10000000;
+    int mediciones = 10;
+    int threads = atoi(argv[1]);
+    ofstream myfile ("/home/francisco/Gitlab/ABBThread/Meditions.csv");
+    queue<Node*> q;
+//    ABB *a = create_tree(new ABB(),n);
     for(int i = 1; i <= 5;i++){ // 5 mediciones correspondiente a 10% .... 50%
-        for(int num_thread = 2; num_thread <= 8; num_thread = num_thread*2){ // cantidad de thread
-            cout << num_thread << endl;
-            for(int num_med = 0; num_med < 10; num_med++){ //numero de mediciones
+        int cont = 0;
+        ABB *a = create_tree(new ABB(),n);
+        auto range = search_range(i*10,n);
+        for(int num_thread = 1; num_thread <= threads; num_thread = num_thread*2){ // cantidad de thread
+            Timer t;
+            t.Restart();
+            cont++;
+            for(int num_med = 0; num_med < mediciones; num_med++){ //numero de mediciones
                 vector<thread> th;
-                queue<Node*> q;
-                q = divide(a,num_thread);
-                auto range = search_range(i*10,10000000);
+                vector<int> v;
+                divide(a,cont,q,get<0>(range),get<1>(range));
                 for(int j = 0; j < num_thread;j++){
-                    th.push_back(thread(print_inorder,q.front(),get<0>(range),get<1>(range)));
+                    Node* t = q.front();
+                    th.push_back(thread(print_inorder,t,get<0>(range),get<1>(range),ref(v)));
                     q.pop();
                 }
                 for(int j = 0; j < num_thread;j++){
                     th[j].join();
                 }
             }
+            t.Stop();
+            cout << "t \t = " << num_thread << " \t " << i*10 << "% " << t.ElapsedTime()/mediciones << endl;
+            ostringstream thread;
+            thread <<num_thread;
+            ostringstream time;
+            time <<t.ElapsedTime()/mediciones;
+            myfile << thread.str() << "," << time.str() << endl;
         }
     }
-    delete a;
+//    delete a;
 /* --------------------------------------------------------------------------------------------------------*/
 
-    int num_thread = 8;
-    for(int size = 1000000; size <= 10000000; size += 1000000){
-        cout << size << endl;
-        ABB* b = create_tree(new ABB(),size);
-        for(int i = 1; i <= 5; i++){
-            for(int num_med = 0; num_med < 5; num_med++){
-                vector<thread> th;
-                queue<Node*> q;
-                q = divide(b,num_thread);
-                auto range = search_range(i*10,size);
-                for(int j = 0; j < num_thread;j++){
-                    th.push_back(thread(print_inorder,q.front(),get<0>(range),get<1>(range)));
-                    q.pop();
-                }
-                for(int j = 0; j < num_thread;j++){
-                    th[j].join();
-                }
-            }
-        }
-        delete b;
-    }
-    //    ofstream output_file ("/home/francisco/Dropbox/C++/ABBThread/test.csv");
+
     //    output_file.close();
     return 0;
 }

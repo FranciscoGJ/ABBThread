@@ -14,7 +14,7 @@
 #include <queue>
 #include "Node.h"
 #include "Time.h"
-
+#include <mutex>
 using namespace std;
 
 
@@ -28,6 +28,7 @@ public:
 
         if(m_root == nullptr){
             m_root = new Node(data);
+            cout << "root is " << m_root->data << endl;
         }else{
             Node* aux = m_root;
             while(aux != nullptr){
@@ -50,14 +51,12 @@ public:
         }
     }
 
-    queue<Node*> Print_by_level(Node* root,int element){
+    void Print_by_level(Node* root,int element, queue<Node*> &m_q){
         queue<Node*> q;
-        queue<Node*> m_q;
         q.push(root);
         int cont = 0;
         while(!q.empty() && cont != element){
             if(q.front()->m_left != nullptr){
-
                 q.push(q.front()->m_left);
             }
             if(q.front()->m_right != nullptr){
@@ -67,7 +66,6 @@ public:
             cont++;
             q.pop();
         }
-        return m_q;
     }
 
     void Search_2(Node* root,int lower_bound,int upper_bound){
@@ -101,42 +99,34 @@ public:
 
 };
 
-queue<Node*> divide(ABB* tree, int num_thread){
-    queue<Node*> q;
-    q = tree->Print_by_level(tree->m_root,num_thread + 1);
-    for(int j = 0; j < num_thread - 1;j++){
+void divide(ABB* tree, int num_thread,queue<Node*>& q,int lower_bound,int upper_bound){
+    queue<Node*> q_empty;
+    q.swap(q_empty);
+    int sacar = (1<<(num_thread-1))-1;
+    int nodos = (1<<num_thread)-1;
+    tree->Print_by_level(tree->m_root,nodos, q);
+    for(int j = 0; j < sacar;j++){
+        if(q.front()->data >= lower_bound && q.front()->data <= upper_bound){
+//            cout << q.front()->data << endl;
+        }
         q.pop();
     }
-    return q;
 }
 
-void print_inorder(Node* root,int lower_bound,int upper_bound){
+std::mutex my_lock;
+
+void print_inorder(Node* root,int lower_bound,int upper_bound, vector<int>& v){
+
     if(root != nullptr){
-        print_inorder(root->m_left,lower_bound,upper_bound);
+        print_inorder(root->m_left,lower_bound,upper_bound,v);
         if(root->data >= lower_bound && root->data <= upper_bound){
             //cout << root->data << endl;
-        } else {
-            return;
+            //		my_lock.lock();
+            //		cout << "insertando" << endl;
+            //		v.push_back(root->data);
+            //		my_lock.unlock();
         }
-        print_inorder(root->m_right,lower_bound,upper_bound);
+        print_inorder(root->m_right,lower_bound,upper_bound,v);
     }
-//    cout << cont << endl;
-
-}
-
-double print_inorder_2(Node* root,int lower_bound,int upper_bound,double &elapsed_time){
-    if(root != nullptr){
-        Timer t;
-        print_inorder_2(root->m_left,lower_bound,upper_bound,elapsed_time);
-        if(root->data >= lower_bound && root->data <= upper_bound){
-            //cout << root->data << endl;
-        } else {
-            t.Stop();
-            return elapsed_time += t.ElapsedTime();
-        }
-        print_inorder_2(root->m_right,lower_bound,upper_bound,elapsed_time);
-    }
-//    cout << cont << endl;
-
 }
 #endif //ABBTHREAD_ABB_H
