@@ -33,54 +33,16 @@ tuple<int, int> search_range(int range,int size){
 
 }
 
-//int main() {
-//
-//    ABB *a = create_tree(new ABB(),10000000);
-//    auto range = search_range(5*10,10000000);
-//    int num_thread = 16;
-//    // a->inorder(a->m_root);
-//    cout << endl;
-//    cout << "Lower " << get<0>(range) << "Upper " << get<1>(range) << endl;
-//    // Search_2(a->m_root,get<0>(range),get<1>(range));
-//
-//    Timer t;
-//    t.Restart();
-//    queue<Node*> q;
-//
-//
-//    for(int i = 0; i < 3; i++){
-//        divide(a,num_thread,q,get<0>(range),get<1>(range));
-//        vector<thread> th;
-//        for(int j = 0; j < num_thread;j++){
-//            th.push_back(thread(Search_2,q.front(),get<0>(range),get<1>(range)));
-//            q.pop();
-//        }
-//
-//        for(int j = 0; j < num_thread;j++){
-//            th[j].join();
-//        }
-//
-//        t.Stop();
-//
-//    }
-//    cout << "t \t = " << num_thread << " \t " << 7*10 << "% " << t.ElapsedTime()/3 << endl;
-//
-//    delete a;
-//    return 0;
-//
-//
-//}
-
 int main(int argc, char** argv) {
     int n = 10000000;
     int mediciones = 10;
     int threads = atoi(argv[1]);
     ofstream myfile ("/home/francisco/Gitlab/ABBThread/Meditions.csv");
     queue<Node*> q;
-    ABB *a = create_tree(new ABB(),n);
+//    ABB *a = create_tree(new ABB(),n);
     for(int i = 1; i <= 5;i++){ // 5 mediciones correspondiente a 10% .... 50%
         int cont = 0;
-//        ABB *a = create_tree(new ABB(),n);
+        ABB *a = create_tree(new ABB(),n);
         auto range = search_range(i*10,n);
         for(int num_thread = 1; num_thread <= threads; num_thread = num_thread*2){ // cantidad de thread
             Timer t;
@@ -92,7 +54,7 @@ int main(int argc, char** argv) {
                 divide(a,cont,q,get<0>(range),get<1>(range));
                 for(int j = 0; j < num_thread;j++){
                     Node* t = q.front();
-                    th.push_back(thread(Search_2,q.front(),get<0>(range),get<1>(range)));
+                    th.push_back(thread(Search,q.front(),get<0>(range),get<1>(range)));
                     q.pop();
                 }
                 for(int j = 0; j < num_thread;j++){
@@ -107,8 +69,9 @@ int main(int argc, char** argv) {
             time <<t.ElapsedTime()/mediciones;
             myfile << thread.str() << "," << time.str() << endl;
         }
+        delete a;
     }
-    delete a;
+//    delete a;
 /* --------------------------------------------------------------------------------------------------------*/
 
 

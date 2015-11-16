@@ -91,31 +91,36 @@ void divide(ABB* tree, int num_thread,queue<Node*>& q,int lower_bound,int upper_
     }
 }
 
-void Search_2(Node* root,int lower_bound,int upper_bound){
+void Search(Node* root,int lower_bound,int upper_bound){
         if(root != nullptr) {
             queue<Node *> q;
             q.push(root);
             while (!q.empty()) {
                 if (q.front()->m_left != nullptr) {
-                    if (q.front()->m_left->data >= lower_bound && q.front()->m_left->data <= upper_bound) {
-                        q.push(q.front()->m_left);
-                    } else {
-                        Search_2(q.front()->m_left->m_right, lower_bound, upper_bound);
+                    if(q.front()->m_left->data >= lower_bound && q.front()->m_left->data <= upper_bound){
+                      q.push(q.front()->m_left);
+                    }else if(q.front()->m_left->data >= upper_bound){
+                      Search(q.front()->m_left->m_left,lower_bound,upper_bound);
+                    }else{
+                      Search(q.front()->m_left->m_right,lower_bound,upper_bound);
                     }
                 }
 
                 if (q.front()->m_right != nullptr) {
-                    if (q.front()->m_right->data >= lower_bound && q.front()->m_right->data <= upper_bound) {
-                        q.push(q.front()->m_right);
-                    } else {
-                        Search_2(q.front()->m_right->m_left, lower_bound, upper_bound);
+                    if(q.front()->m_right->data >= lower_bound && q.front()->m_right->data <= upper_bound){
+                      q.push(q.front()->m_right);
+                    }else if(q.front()->m_right->data >= upper_bound){
+                      Search(q.front()->m_right->m_left,lower_bound,upper_bound);
+                    }else{
+                      Search(q.front()->m_right->m_right,lower_bound,upper_bound);
                     }
                 }
                 if (q.front()->data >= lower_bound && q.front()->data <= upper_bound) {
-//                    cout << q.front()->data << endl;
+                  //  cout << q.front()->data << ", ";
                 }
                 q.pop();
-            }
+          }
+//          cout << endl;
         }
         return;
 }
